@@ -30,13 +30,19 @@ module.exports = async (req, res) => {
         const isVercel = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_VERSION;
 
         if (isVercel) {
-            browser = await puppeteerCore.launch({
-                args: chromium.args,
-                defaultViewport: chromium.defaultViewport,
-                executablePath: await chromium.executablePath(),
-                headless: chromium.headless,
-                ignoreHTTPSErrors: true,
-            });
+            console.log('Running on Vercel/Lambda');
+            try {
+                browser = await puppeteerCore.launch({
+                    args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+                    defaultViewport: chromium.defaultViewport,
+                    executablePath: await chromium.executablePath(),
+                    headless: chromium.headless,
+                    ignoreHTTPSErrors: true,
+                });
+            } catch (launchError) {
+                console.error('Browser Launch Failed:', launchError);
+                throw new Error(`Browser launch failed: ${launchError.message}`);
+            }
         } else {
             // Local fallback
             if (puppeteerLocal) {
@@ -53,8 +59,21 @@ module.exports = async (req, res) => {
 
         // Set Viewport
         // normalize viewport if it came as a string or object
-        const width = parseInt(viewport.width) || 1920;
-        const height = parseInt(viewport.height) || 1080;
+        let width = 1920;
+        let height = 1080;
+
+        if (typeof viewport === 'string') {
+            try {
+                const parsed = JSON.parse(viewport);
+                width = parseInt(parsed.width) || 1920;
+                height = parseInt(parsed.height) || 1080;
+            } catch (e) {
+                console.log('Viewport string parsing failed, using defaults');
+            }
+        } else if (typeof viewport === 'object') {
+            width = parseInt(viewport.width) || 1920;
+            height = parseInt(viewport.height) || 1080;
+        }
 
         await page.setViewport({
             width,
@@ -63,11 +82,14 @@ module.exports = async (req, res) => {
         });
 
         // 3. Navigate
+        console.log(`Navigating to ${url}`);
         await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
 
         // 4. Cleanup (Cookies & Animations) - Borrowed from original script
-        await closeCookieBanners(page);
-        await waitForAnimations(page);
+        try {
+            await closeCookieBanners(page);
+            await waitForAnimations(page);
+        } catch (e) { console.log('Cleanup warning:', e.message); }
 
         // 5. Scroll to Section
         if (!fullPage && section) {
@@ -76,6 +98,7 @@ module.exports = async (req, res) => {
         }
 
         // 6. Capture
+        console.log('Taking screenshot...');
         let screenshotBuffer = await page.screenshot({
             type: 'png',
             fullPage: !!fullPage,
@@ -83,8 +106,13 @@ module.exports = async (req, res) => {
         });
 
         // 7. Add Browser Bar (optional)
-        if (addBrowserBar && !fullPage) {
-            screenshotBuffer = await addBrowserBarFn(page, screenshotBuffer, url, { width, height });
+        if (addBrowserBar && !fullPage && req.query.skipBar !== 'true') {
+            try {
+                screenshotBuffer = await addBrowserBarFn(page, screenshotBuffer, url, { width, height });
+            } catch (barError) {
+                console.error('Browser bar error:', barError);
+                // Continue with original screenshot if bar fails
+            }
         }
 
         // 8. Return Result
@@ -94,10 +122,13 @@ module.exports = async (req, res) => {
         res.status(200).send(screenshotBuffer);
 
     } catch (error) {
-        console.error('Screenshot Error:', error);
+        console.error('Screenshot Function Error:', error);
+        // Ensure we return JSON for errors so n8n can read the message
         res.status(500).json({
             error: 'Failed to take screenshot',
-            details: error.message
+            message: error.message,
+            stack: error.stack,
+            details: 'Check Vercel Function Logs for more info'
         });
     } finally {
         if (browser) {
