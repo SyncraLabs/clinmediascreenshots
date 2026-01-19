@@ -1,0 +1,5 @@
+node_modules
+.env
+test_output.png
+capturas
+.DS_Store

@@ -1,0 +1,148 @@
+{
+    "name": "Screenshot Automation (Vercel)",
+    "nodes": [
+        {
+            "parameters": {
+                "rule": {
+                    "interval": [
+                        {
+                            "field": "cronExpression",
+                            "expression": "0 9 * * 1"
+                        }
+                    ]
+                }
+            },
+            "type": "n8n-nodes-base.scheduleTrigger",
+            "typeVersion": 1,
+            "position": [
+                20,
+                340
+            ],
+            "id": "trigger-cron",
+            "name": "Weekly Trigger"
+        },
+        {
+            "parameters": {
+                "jsCode": "return [\n  { json: { url: 'https://client-site.com', name: 'Client Name' } }\n];"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                220,
+                340
+            ],
+            "id": "node-data",
+            "name": "Define Sites"
+        },
+        {
+            "parameters": {
+                "jsCode": "const viewports = [\n  { name: 'desktop', width: 1920, height: 1080 },\n  { name: 'tablet', width: 768, height: 1024 },\n  { name: 'mobile', width: 375, height: 667 }\n];\n\nconst sections = ['header', 'content', 'footer'];\n\nconst results = [];\n\n// Create a combination of Site x Viewport x Section\nitems.forEach(item => {\n  const site = item.json;\n  viewports.forEach(vp => {\n    sections.forEach(sec => {\n      results.push({\n        json: {\n          url: site.url,\n          client: site.name,\n          viewport: vp,\n          section: sec\n        }\n      });\n    });\n  });\n});\n\nreturn results;"
+            },
+            "type": "n8n-nodes-base.code",
+            "typeVersion": 2,
+            "position": [
+                420,
+                340
+            ],
+            "id": "node-loop-logic",
+            "name": "Loop Logic"
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://YOUR-VERCEL-APP.vercel.app/api/screenshot",
+                "sendBody": true,
+                "contentType": "json",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "url",
+                            "value": "={{ $json.url }}"
+                        },
+                        {
+                            "name": "viewport",
+                            "value": "={{ $json.viewport }}"
+                        },
+                        {
+                            "name": "section",
+                            "value": "={{ $json.section }}"
+                        },
+                        {
+                            "name": "addBrowserBar",
+                            "value": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 3,
+            "position": [
+                640,
+                340
+            ],
+            "id": "node-api-call",
+            "name": "Call Vercel API"
+        },
+        {
+            "parameters": {
+                "fileName": "={{ $json.client }}/{{ $json.viewport.name }}/{{ $json.section }}.png",
+                "binaryPropertyName": "data"
+            },
+            "type": "n8n-nodes-base.googleDrive",
+            "typeVersion": 2,
+            "position": [
+                860,
+                340
+            ],
+            "id": "node-save-gdrive",
+            "name": "Save to Drive (Example)"
+        }
+    ],
+    "connections": {
+        "Weekly Trigger": {
+            "main": [
+                [
+                    {
+                        "node": "Define Sites",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Define Sites": {
+            "main": [
+                [
+                    {
+                        "node": "Loop Logic",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Loop Logic": {
+            "main": [
+                [
+                    {
+                        "node": "Call Vercel API",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Call Vercel API": {
+            "main": [
+                [
+                    {
+                        "node": "Save to Drive (Example)",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

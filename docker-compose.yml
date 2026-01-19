@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  # 1. n8n (Automation)
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      - N8N_HOST=${SUBDOMAIN}.${DOMAIN_NAME}
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=https
+      - NODE_ENV=production
+      - WEBHOOK_URL=https://${SUBDOMAIN}.${DOMAIN_NAME}/
+      - GENERIC_TIMEZONE=Europe/Madrid
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  # 2. Screenshot Service (Your custom script)
+  screenshot-service:
+    build: .
+    container_name: screenshot-service
+    restart: always
+    # No exposed port needed if n8n talks to it internally
+    # But useful for debugging:
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+
+volumes:
+  n8n_data:
