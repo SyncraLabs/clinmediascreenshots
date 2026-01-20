@@ -1,0 +1,82 @@
+2026-01-19T22:38:10.551Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":731,"targetScroll":0,"startY":0}
+2026-01-19T22:38:10.834Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":731,"targetScroll":292.40000000000003,"startY":0}
+2026-01-19T22:38:10.866Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":731,"targetScroll":731,"startY":0}
+2026-01-19T22:38:10.872Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:38:11.142Z [Post-Scroll] After Scroll Y: 292
+2026-01-19T22:38:11.173Z [Post-Scroll] After Scroll Y: 731
+2026-01-19T22:38:15.849Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":6965,"targetScroll":6965,"startY":0}
+2026-01-19T22:38:16.158Z [Post-Scroll] After Scroll Y: 6965
+2026-01-19T22:38:16.615Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":849,"targetScroll":849,"startY":0}
+2026-01-19T22:38:16.748Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":849,"targetScroll":0,"startY":0}
+2026-01-19T22:38:16.931Z [Post-Scroll] After Scroll Y: 849
+2026-01-19T22:38:17.059Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:38:17.649Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":849,"targetScroll":339.6,"startY":0}
+2026-01-19T22:38:17.958Z [Post-Scroll] After Scroll Y: 340
+2026-01-19T22:38:22.530Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":829,"targetScroll":0,"startY":0}
+2026-01-19T22:38:22.563Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":829,"targetScroll":829,"startY":0}
+2026-01-19T22:38:22.837Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:38:22.869Z [Post-Scroll] After Scroll Y: 829
+2026-01-19T22:38:24.147Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":829,"targetScroll":331.6,"startY":0}
+2026-01-19T22:38:24.451Z [Post-Scroll] After Scroll Y: 332
+2026-01-19T22:38:30.148Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":731,"targetScroll":0,"startY":0}
+2026-01-19T22:38:30.347Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":731,"targetScroll":292.40000000000003,"startY":0}
+2026-01-19T22:38:30.380Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":731,"targetScroll":731,"startY":0}
+2026-01-19T22:38:30.452Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:38:30.657Z [Post-Scroll] After Scroll Y: 292
+2026-01-19T22:38:30.689Z [Post-Scroll] After Scroll Y: 731
+2026-01-19T22:38:34.278Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":6965,"targetScroll":6965,"startY":0}
+2026-01-19T22:38:34.589Z [Post-Scroll] After Scroll Y: 6965
+2026-01-19T22:39:53.813Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":6965,"targetScroll":2786,"startY":0}
+2026-01-19T22:39:53.816Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":6965,"targetScroll":6965,"startY":0}
+2026-01-19T22:39:53.820Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":6965,"targetScroll":0,"startY":0}
+2026-01-19T22:39:54.124Z [Post-Scroll] After Scroll Y: 2786
+2026-01-19T22:39:54.127Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:39:54.128Z [Post-Scroll] After Scroll Y: 6965
+2026-01-19T22:40:03.459Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":7204,"targetScroll":0,"startY":0}
+2026-01-19T22:40:03.492Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":7204,"targetScroll":2881.6000000000004,"startY":0}
+2026-01-19T22:40:03.766Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:40:03.806Z [Post-Scroll] After Scroll Y: 2882
+2026-01-19T22:40:04.758Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":7204,"targetScroll":7204,"startY":0}
+2026-01-19T22:40:05.066Z [Post-Scroll] After Scroll Y: 7204
+2026-01-19T22:40:08.114Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":8071,"targetScroll":3228.4,"startY":0}
+2026-01-19T22:40:08.351Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":8071,"targetScroll":8071,"startY":0}
+2026-01-19T22:40:08.427Z [Post-Scroll] After Scroll Y: 3228
+2026-01-19T22:40:08.477Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":8071,"targetScroll":0,"startY":0}
+2026-01-19T22:40:08.663Z [Post-Scroll] After Scroll Y: 8071
+2026-01-19T22:40:08.785Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:40:16.148Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":849,"targetScroll":0,"startY":0}
+2026-01-19T22:40:16.453Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:40:16.630Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":849,"targetScroll":339.6,"startY":0}
+2026-01-19T22:40:16.934Z [Post-Scroll] After Scroll Y: 340
+2026-01-19T22:40:16.963Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":849,"targetScroll":849,"startY":0}
+2026-01-19T22:40:17.271Z [Post-Scroll] After Scroll Y: 849
+2026-01-19T22:40:22.596Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":829,"targetScroll":331.6,"startY":0}
+2026-01-19T22:40:22.830Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":829,"targetScroll":829,"startY":0}
+2026-01-19T22:40:22.902Z [Post-Scroll] After Scroll Y: 332
+2026-01-19T22:40:23.095Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":829,"targetScroll":0,"startY":0}
+2026-01-19T22:40:23.139Z [Post-Scroll] After Scroll Y: 829
+2026-01-19T22:40:23.407Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:40:26.409Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":731,"targetScroll":731,"startY":0}
+2026-01-19T22:40:26.717Z [Post-Scroll] After Scroll Y: 731
+2026-01-19T22:40:27.862Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":731,"targetScroll":0,"startY":0}
+2026-01-19T22:40:28.174Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:40:28.762Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":731,"targetScroll":292.40000000000003,"startY":0}
+2026-01-19T22:40:29.072Z [Post-Scroll] After Scroll Y: 292
+2026-01-19T22:40:34.395Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":849,"targetScroll":849,"startY":0}
+2026-01-19T22:40:34.494Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":849,"targetScroll":0,"startY":0}
+2026-01-19T22:40:34.699Z [Post-Scroll] After Scroll Y: 849
+2026-01-19T22:40:34.806Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:40:34.978Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":849,"targetScroll":339.6,"startY":0}
+2026-01-19T22:40:35.282Z [Post-Scroll] After Scroll Y: 340
+2026-01-19T22:40:39.879Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":829,"targetScroll":331.6,"startY":0}
+2026-01-19T22:40:39.944Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":829,"targetScroll":829,"startY":0}
+2026-01-19T22:40:39.998Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":829,"targetScroll":0,"startY":0}
+2026-01-19T22:40:40.185Z [Post-Scroll] After Scroll Y: 332
+2026-01-19T22:40:40.259Z [Post-Scroll] After Scroll Y: 829
+2026-01-19T22:40:40.308Z [Post-Scroll] After Scroll Y: 0
+2026-01-19T22:40:45.977Z [Pre-Scroll] Section: content, Pct: 0.4, Info: {"totalHeight":731,"targetScroll":292.40000000000003,"startY":0}
+2026-01-19T22:40:46.017Z [Pre-Scroll] Section: footer, Pct: 1, Info: {"totalHeight":731,"targetScroll":731,"startY":0}
+2026-01-19T22:40:46.126Z [Pre-Scroll] Section: header, Pct: 0, Info: {"totalHeight":731,"targetScroll":0,"startY":0}
+2026-01-19T22:40:46.282Z [Post-Scroll] After Scroll Y: 292
+2026-01-19T22:40:46.324Z [Post-Scroll] After Scroll Y: 731
+2026-01-19T22:40:46.437Z [Post-Scroll] After Scroll Y: 0

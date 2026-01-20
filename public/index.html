@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Screenshot API Client</title>
+    <title>Screenshot Generator</title>
     <style>
         :root {
             --bg: #0f172a;
@@ -11,206 +12,346 @@
             --text: #f8fafc;
             --primary: #3b82f6;
             --border: #334155;
+            --success: #22c55e;
+            --error: #ef4444;
         }
+
         body {
             font-family: 'Segoe UI', system-ui, sans-serif;
             background: var(--bg);
             color: var(--text);
             margin: 0;
+            padding: 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
-            padding: 2rem;
-        }
-        .container {
-            width: 100%;
-            max-width: 800px;
-        }
-        h1 { margin-bottom: 2rem; text-align: center; }
-        
-        .card {
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
         }
 
-        .form-group { margin-bottom: 1.5rem; }
-        label { display: block; margin-bottom: 0.5rem; font-weight: 500; font-size: 0.9rem; color: #94a3b8; }
-        
-        input, select {
+        .container {
             width: 100%;
-            padding: 0.75rem;
+            max-width: 1400px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            background: var(--card);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            display: flex;
+            gap: 1rem;
+            max-width: 800px;
+            margin: 0 auto 2rem auto;
+            align-items: center;
+        }
+
+        input {
+            flex: 1;
+            padding: 1rem;
             border-radius: 8px;
             border: 1px solid var(--border);
             background: #0f172a;
             color: white;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary);
-            ring: 2px solid var(--primary);
+            font-size: 1.1rem;
         }
 
         button {
-            width: 100%;
-            padding: 1rem;
+            padding: 1rem 2rem;
             background: var(--primary);
             color: white;
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: opacity 0.2s;
+            white-space: nowrap;
         }
-        button:hover { opacity: 0.9; }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .preview {
-            margin-top: 2rem;
+        button:disabled {
+            opacity: 0.5;
+            background: #64748b;
+            cursor: not-allowed;
+        }
+
+        .status-bar {
             text-align: center;
-            min-height: 200px;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+            color: #94a3b8;
+            min-height: 1.5em;
+        }
+
+        /* Group by Page */
+        .page-section {
+            margin-bottom: 3rem;
+        }
+
+        .page-title {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border);
+            color: var(--primary);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .result-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .result-header {
+            padding: 0.75rem;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            background: #334155;
+            color: #cbd5e1;
+        }
+
+        .image-container {
+            min-height: 180px;
+            background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px dashed var(--border);
-            border-radius: 12px;
-            overflow: hidden;
             position: relative;
         }
-        .preview img { max-width: 100%; display: none; }
-        .preview.loading::after {
-            content: "Generating...";
-            position: absolute;
-            color: var(--primary);
+
+        .image-container img {
+            max-width: 100%;
+            display: block;
         }
-        
-        .error {
-            color: #ef4444;
-            background: #450a0a;
+
+        .loader {
+            width: 32px;
+            height: 32px;
+            border: 3px solid #FFF;
+            border-bottom-color: var(--primary);
+            border-radius: 50%;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-msg {
+            color: var(--error);
             padding: 1rem;
-            border-radius: 8px;
-            margin-top: 1rem;
-            display: none;
-            white-space: pre-wrap;
-            font-family: monospace;
-            text-align: left;
+            text-align: center;
+            font-size: 0.8rem;
+        }
+
+        .viewport-laptop {
+            color: #60a5fa;
+        }
+
+        .viewport-tablet {
+            color: #c084fc;
+        }
+
+        .viewport-mobile {
+            color: #f472b6;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>📸 Screenshot API Client</h1>
-        
-        <div class="card">
-            <div class="form-group">
-                <label>Target URL</label>
-                <input type="url" id="url" placeholder="https://example.com" value="https://example.com">
-            </div>
-            
-            <div class="grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                <div class="form-group">
-                    <label>Viewport</label>
-                    <select id="viewport">
-                        <option value='{"width":1920,"height":1080,"name":"desktop"}'>Desktop (1920x1080)</option>
-                        <option value='{"width":768,"height":1024,"name":"tablet"}'>Tablet (768x1024)</option>
-                        <option value='{"width":375,"height":667,"name":"mobile"}'>Mobile (375x667)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Section</label>
-                    <select id="section">
-                        <option value="header">Header</option>
-                        <option value="content">Content</option>
-                        <option value="footer">Footer</option>
-                        <option value="full">Full Page (No specific section)</option>
-                    </select>
-                </div>
-            </div>
+        <h1>📸 Multi-Page Screenshot Matrix</h1>
 
-            <button id="btn" onclick="generate()">Generate Screenshot</button>
-
-            <div id="error" class="error"></div>
-
-            <div class="preview" id="previewArea">
-                <span style="color: #64748b" id="placeholder">Image will appear here</span>
-                <img id="resultImage" alt="Screenshot Result">
-            </div>
+        <div class="input-group">
+            <input type="url" id="url" placeholder="Enter base URL (e.g. syncralabs.es)" value="syncralabs.es"
+                onkeypress="handleEnter(event)">
+            <button id="btn" onclick="startGeneration()">Generate Full Matrix</button>
         </div>
+
+        <div id="status" class="status-bar">Waiting to start...</div>
+
+        <div id="results"></div>
     </div>
 
     <script>
-        async function generate() {
-            const btn = document.getElementById('btn');
-            const url = document.getElementById('url').value;
-            const viewportStr = document.getElementById('viewport').value;
-            const section = document.getElementById('section').value;
-            const img = document.getElementById('resultImage');
-            const preview = document.getElementById('previewArea');
-            const errorDiv = document.getElementById('error');
-            const placeholder = document.getElementById('placeholder');
+        // Configuration Matrix
+        const PAGES = [
+            { name: 'Inicio', path: '' },
+            { name: 'Contacto', path: '/contacto' },
+            { name: 'Servicios', path: '/servicios' }
+        ];
 
-            // Reset
-            errorDiv.style.display = 'none';
-            img.style.display = 'none';
-            placeholder.style.display = 'none';
-            preview.classList.add('loading');
+        const DEVICES = [
+            { name: 'Laptop', width: 1920, height: 1080, class: 'viewport-laptop' },
+            { name: 'Tablet', width: 768, height: 1024, class: 'viewport-tablet' },
+            { name: 'Mobile', width: 375, height: 667, class: 'viewport-mobile' }
+        ];
+
+        const SECTIONS = ['header', 'content', 'footer'];
+
+        function handleEnter(e) {
+            if (e.key === 'Enter') startGeneration();
+        }
+
+        async function startGeneration() {
+            let baseUrl = document.getElementById('url').value.trim();
+            if (!baseUrl) return;
+
+            // Normalize Protocol
+            if (!baseUrl.startsWith('http')) {
+                baseUrl = 'https://' + baseUrl;
+                document.getElementById('url').value = baseUrl;
+            }
+            // Remove trailing slash for consistency
+            baseUrl = baseUrl.replace(/\/$/, '');
+
+            const btn = document.getElementById('btn');
+            const status = document.getElementById('status');
+            const resultsContainer = document.getElementById('results');
+
             btn.disabled = true;
-            btn.innerText = 'Capturing...';
+            status.textContent = 'Initializing...';
+            resultsContainer.innerHTML = '';
+
+            // 1. Build the Grid Structure
+            let tasks = [];
+            let taskIndex = 0;
+
+            PAGES.forEach(page => {
+                const sectionDiv = document.createElement('div');
+                sectionDiv.className = 'page-section';
+                sectionDiv.innerHTML = `<div class="page-title">${page.name} (${page.path || '/'})</div>`;
+
+                const gridDiv = document.createElement('div');
+                gridDiv.className = 'grid';
+
+                DEVICES.forEach(device => {
+                    SECTIONS.forEach(section => {
+                        const cardId = `card-${taskIndex}`;
+                        const card = document.createElement('div');
+                        card.className = 'result-card';
+                        card.id = cardId;
+                        card.innerHTML = `
+                            <div class="result-header">
+                                <strong class="${device.class}">${device.name} - ${section}</strong>
+                                <span class="badge">Pending</span>
+                            </div>
+                            <div class="image-container">
+                                <span class="loader" style="display:none"></span>
+                            </div>
+                        `;
+                        gridDiv.appendChild(card);
+
+                        tasks.push({
+                            id: cardId,
+                            url: baseUrl + page.path,
+                            viewport: { width: device.width, height: device.height },
+                            section: section,
+                            // Adding browser bar generally looks better on header shots or full desktop, 
+                            // but let's keep it consistent: always off or always on? 
+                            // User didn't specify, but usually clean screenshots (no bar) are better for simple "sections".
+                            // BUT previous code had "addBrowserBar: true". 
+                            // Let's keep it TRUE for now as it adds that "screenshot" feel, 
+                            // but maybe disable it for "content/footer" to avoid clutter?
+                            // Actually, let's keep it simple: Bar is ON.
+                            addBrowserBar: true
+                        });
+                        taskIndex++;
+                    });
+                });
+
+                sectionDiv.appendChild(gridDiv);
+                resultsContainer.appendChild(sectionDiv);
+            });
+
+            // 2. Execute with Concurrency Limit (to avoid Vercel rate limits/timeouts)
+            status.textContent = `Queued ${tasks.length} screenshots...`;
+
+            // We'll run in batches of 3 to be safe
+            const BATCH_SIZE = 3;
+            for (let i = 0; i < tasks.length; i += BATCH_SIZE) {
+                const batch = tasks.slice(i, i + BATCH_SIZE);
+                status.textContent = `Processing batch ${Math.ceil((i + 1) / 3)} of ${Math.ceil(tasks.length / 3)}...`;
+
+                await Promise.all(batch.map(task => processTask(task)));
+            }
+
+            status.textContent = '✅ All 27 screenshots completed!';
+            btn.disabled = false;
+        }
+
+        async function processTask(task) {
+            const card = document.getElementById(task.id);
+            const badge = card.querySelector('.badge');
+            const loader = card.querySelector('.loader');
+            const container = card.querySelector('.image-container');
+
+            badge.textContent = 'Processing';
+            badge.style.background = '#eab308';
+            loader.style.display = 'block';
 
             try {
-                // Parse viewport
-                const viewport = JSON.parse(viewportStr);
-                
-                const body = {
-                    url: url,
-                    viewport: viewport,
-                    addBrowserBar: true
-                };
-
-                if (section !== 'full') {
-                    body.section = section;
-                } else {
-                    body.fullPage = true;
-                }
-
                 const res = await fetch('/api/screenshot', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body)
+                    body: JSON.stringify({
+                        url: task.url,
+                        viewport: task.viewport,
+                        section: task.section,
+                        addBrowserBar: task.addBrowserBar
+                    })
                 });
 
-                if (!res.ok) {
-                    const errText = await res.text();
-                    let errMessage = errText;
-                    try {
-                         const json = JSON.parse(errText);
-                         errMessage = JSON.stringify(json, null, 2);
-                    } catch(e) {}
-                    throw new Error(`Server Error (${res.status}):\n${errMessage}`);
-                }
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                 const blob = await res.blob();
-                const imageUrl = URL.createObjectURL(blob);
-                
-                img.src = imageUrl;
-                img.style.display = 'block';
+                const imgUrl = URL.createObjectURL(blob);
+
+                loader.style.display = 'none';
+                container.innerHTML = `<img src="${imgUrl}">`;
+                badge.textContent = 'Done';
+                badge.style.background = '#22c55e';
 
             } catch (e) {
-                errorDiv.innerText = e.message;
-                errorDiv.style.display = 'block';
-                placeholder.style.display = 'block';
-            } finally {
-                preview.classList.remove('loading');
-                btn.disabled = false;
-                btn.innerText = 'Generate Screenshot';
+                console.error(e);
+                loader.style.display = 'none';
+                container.innerHTML = `<div class="error-msg">Failed</div>`;
+                badge.textContent = 'Error';
+                badge.style.background = '#ef4444';
             }
         }
     </script>
 </body>
+
 </html>

@@ -1,5 +1,6 @@
 const chromium = require('@sparticuz/chromium');
 const puppeteerCore = require('puppeteer-core');
+
 // Fallback for local testing if you have full puppeteer installed
 let puppeteerLocal;
 try {
@@ -21,6 +22,11 @@ module.exports = async (req, res) => {
         fullPage = false,
         addBrowserBar = true
     } = req.body || req.query; // Support GET for quick tests too
+
+    // Normalize URL
+    if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
+        url = 'https://' + url;
+    }
 
     let browser = null;
 
@@ -92,17 +98,25 @@ module.exports = async (req, res) => {
         } catch (e) { console.log('Cleanup warning:', e.message); }
 
         // 5. Scroll to Section
+        // 5. Scroll to Section and get Y
+        let currentY = 0;
         if (!fullPage && section) {
-            await scrollToSection(page, section);
-            await new Promise(r => setTimeout(r, 500)); // Small wait after scroll
+            currentY = await scrollToSection(page, section);
+            // Ensure Y is non-negative
+            currentY = Math.max(0, currentY);
         }
 
         // 6. Capture
-        console.log('Taking screenshot...');
+        console.log(`Taking screenshot at Y=${currentY}...`);
         let screenshotBuffer = await page.screenshot({
             type: 'png',
             fullPage: !!fullPage,
-            clip: (!fullPage && section) ? { x: 0, y: 0, width, height } : undefined
+            clip: (!fullPage) ? {
+                x: 0,
+                y: currentY,
+                width: width,
+                height: height
+            } : undefined
         });
 
         // 7. Add Browser Bar (optional)
@@ -247,9 +261,26 @@ async function waitForAnimations(page) {
 }
 
 async function scrollToSection(page, section) {
-    const scrollPercentages = { header: 0, content: 0.4, footer: 1 };
+    const scrollPercentages = {
+        header: 0,
+        content: 0.4,
+        footer: 1
+    };
+
     const percentage = scrollPercentages[section] || 0;
-    await page.evaluate((pct) => {
-        window.scrollTo({ top: (document.body.scrollHeight - window.innerHeight) * pct, behavior: 'instant' });
+
+    // Calculate target Y first
+    const targetY = await page.evaluate((pct) => {
+        const totalHeight = document.body.scrollHeight - window.innerHeight;
+        return totalHeight * pct;
     }, percentage);
+
+    // Scroll to it
+    await page.evaluate((y) => {
+        window.scrollTo({ top: y, behavior: 'instant' });
+    }, targetY);
+
+    await new Promise(r => setTimeout(r, 500));
+
+    return targetY;
 }
