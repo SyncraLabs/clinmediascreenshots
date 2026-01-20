@@ -1,0 +1,115 @@
+{
+    "name": "Full Screenshot Matrix Generator",
+    "nodes": [
+        {
+            "parameters": {},
+            "name": "Start",
+            "type": "n8n-nodes-base.start",
+            "typeVersion": 1,
+            "position": [
+                250,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "jsCode": "// Define the Base URL here\nconst baseUrl = $('Start').item.json.url || 'https://syncralabs.es';\n\n// Configuration\nconst devices = [\n  { name: 'laptop', width: 1920, height: 1080 },\n  { name: 'tablet', width: 768, height: 1024 },\n  { name: 'mobile', width: 375, height: 667 }\n];\n\nconst pages = [\n  { name: 'inicio', path: '' },\n  { name: 'servicios', path: 'servicios' },\n  { name: 'contacto', path: 'contacto' }\n];\n\nconst sections = ['header', 'content', 'footer'];\n\n// Generate all 27 combinations\nconst jobs = [];\n\nfor (const device of devices) {\n  for (const page of pages) {\n    for (const section of sections) {\n      // Construct full URL (handle trailing slashes)\n      let fullUrl = baseUrl;\n      if (page.path) {\n        fullUrl = fullUrl.endsWith('/') ? fullUrl + page.path : fullUrl + '/' + page.path;\n      }\n      \n      jobs.push({\n        json: {\n          url: fullUrl,\n          section: section,\n          viewport: {\n            width: device.width,\n            height: device.height\n          },\n          fileName: `${page.name}_${device.name}_${section}.png`\n        }\n      });\n    }\n  }\n}\n\nreturn jobs;"
+            },
+            "name": "Generate Matrix Config",
+            "type": "n8n-nodes-base.function",
+            "typeVersion": 1,
+            "position": [
+                450,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "method": "POST",
+                "url": "https://clinmediascreenshots.vercel.app/api/screenshot",
+                "sendBody": true,
+                "contentType": "json",
+                "bodyParameters": {
+                    "parameters": [
+                        {
+                            "name": "url",
+                            "value": "={{$json.url}}"
+                        },
+                        {
+                            "name": "section",
+                            "value": "={{$json.section}}"
+                        },
+                        {
+                            "name": "viewport",
+                            "value": "={{$json.viewport}}"
+                        },
+                        {
+                            "name": "addBrowserBar",
+                            "value": true
+                        }
+                    ]
+                },
+                "options": {}
+            },
+            "name": "Take Screenshot",
+            "type": "n8n-nodes-base.httpRequest",
+            "typeVersion": 2,
+            "position": [
+                650,
+                300
+            ]
+        },
+        {
+            "parameters": {
+                "operation": "toFile",
+                "fileFormat": "png",
+                "options": {
+                    "fileName": "={{$node[\"Generate Matrix Config\"].json[\"fileName\"]}}"
+                }
+            },
+            "name": "Convert to File",
+            "type": "n8n-nodes-base.spreadsheetFile",
+            "typeVersion": 1,
+            "position": [
+                850,
+                300
+            ],
+            "notes": "Using Spreadsheet node just to demonstrate file handling, or typically result IS binary. In latest n8n HTTP node returns binary directly."
+        }
+    ],
+    "connections": {
+        "Start": {
+            "main": [
+                [
+                    {
+                        "node": "Generate Matrix Config",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Generate Matrix Config": {
+            "main": [
+                [
+                    {
+                        "node": "Take Screenshot",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        },
+        "Take Screenshot": {
+            "main": [
+                [
+                    {
+                        "node": "Convert to File",
+                        "type": "main",
+                        "index": 0
+                    }
+                ]
+            ]
+        }
+    }
+}

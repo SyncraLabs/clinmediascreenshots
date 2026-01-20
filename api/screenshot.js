@@ -89,7 +89,8 @@ module.exports = async (req, res) => {
 
         // 3. Navigate
         console.log(`Navigating to ${url}`);
-        await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
+        // Use domcontentloaded for faster response on Vercel
+        await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 30000 });
 
         // 4. Cleanup (Cookies & Animations) - Borrowed from original script
         try {
@@ -98,12 +99,16 @@ module.exports = async (req, res) => {
         } catch (e) { console.log('Cleanup warning:', e.message); }
 
         // 5. Scroll to Section
-        // 5. Scroll to Section and get Y
         let currentY = 0;
-        if (!fullPage && section) {
-            currentY = await scrollToSection(page, section);
-            // Ensure Y is non-negative
-            currentY = Math.max(0, currentY);
+        // Optimization: Skip scrolling for header (0 scroll)
+        if (!fullPage && section && section !== 'header') {
+            try {
+                currentY = await scrollToSection(page, section);
+                currentY = Math.max(0, currentY);
+            } catch (scrollError) {
+                console.log('Scroll failed, defaulting to 0', scrollError);
+                currentY = 0;
+            }
         }
 
         // 6. Capture
