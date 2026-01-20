@@ -38,8 +38,19 @@ module.exports = async (req, res) => {
         if (isVercel) {
             console.log('Running on Vercel/Lambda');
             try {
+                // REQUIRED for Vercel: Disable graphics to avoid libnss3 missing errors
+                await chromium.font('https://raw.githack.com/googlei18n/noto-emoji/master/fonts/NotoColorEmoji.ttf');
+                chromium.setGraphicsMode = false;
+
                 browser = await puppeteerCore.launch({
-                    args: [...chromium.args, '--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
+                    args: [
+                        ...chromium.args,
+                        '--no-sandbox',
+                        '--disable-setuid-sandbox',
+                        '--disable-dev-shm-usage',
+                        '--disable-gpu',
+                        '--no-zygote'
+                    ],
                     defaultViewport: chromium.defaultViewport,
                     executablePath: await chromium.executablePath(),
                     headless: chromium.headless,
